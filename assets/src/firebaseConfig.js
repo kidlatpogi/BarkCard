@@ -9,15 +9,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getFirestore } from "firebase/firestore";
 import { Platform } from "react-native";
 
-// Firebase config (web credentials provided)
+// Firebase config (web credentials provided) - updated to the project the user requested
 const firebaseConfig = {
-  apiKey: "AIzaSyDRY3jdPdofQjyp-LH9kGJkp6ty28IcdOU",
-  authDomain: "dm-bcv4.firebaseapp.com",
-  projectId: "dm-bcv4",
-  storageBucket: "dm-bcv4.firebasestorage.app",
-  messagingSenderId: "666851736526",
-  appId: "1:666851736526:web:c578822532f63f7a60499f",
-  measurementId: "G-39JL538ZLB",
+  apiKey: "AIzaSyCDd7X_GmkcfUzUpKYHDK3GKOCk0l8UalM",
+  authDomain: "verification-try.firebaseapp.com",
+  projectId: "verification-try",
+  storageBucket: "verification-try.firebasestorage.app",
+  messagingSenderId: "449101815089",
+  appId: "1:449101815089:web:5b2867f2b383422500a410",
+  measurementId: "G-9VTYNEFNQM",
 };
 
 // Initialize Firebase

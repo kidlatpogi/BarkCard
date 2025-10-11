@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: 20,
 		justifyContent: 'center',
 		backgroundColor: '#fff',
+		alignItems: 'center',
 	},
 	title: {
 		fontSize: 22,
@@ -22,6 +23,11 @@ export const styles = StyleSheet.create({
 		paddingHorizontal: 12,
 		marginBottom: 12,
 		backgroundColor: '#fafafa',
+	},
+	logoImage: {
+		width: 120,
+		height: 120,
+		marginBottom: 14,
 	},
 	button: {
 		height: 48,
