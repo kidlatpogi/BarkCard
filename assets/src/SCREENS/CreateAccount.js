@@ -8,7 +8,7 @@ import styles from '../STYLES/CreateAccount.styles';
 
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+// ...existing code...
 
 // Password policy: max 24 chars, at least 1 upper, 1 lower, 1 number
 const MAX_PASSWORD_LENGTH = 24;
@@ -65,19 +65,9 @@ export default function CreateAccount({ onCreated, onCancel }) {
         await sendEmailVerification(user);
         console.log('✅ Email verification sent successfully to', user.email);
 
-        // Ensure a single user document exists at tbl_User/{uid}
-        try {
-          await setDoc(doc(db, 'tbl_User', user.uid), {
-            uid: user.uid,
-            email: user.email,
-            createdAt: serverTimestamp(),
-            role: 'user',
-            emailVerified: false
-          }, { merge: true });
-          console.log('✅ User document created/updated in Firestore at tbl_User/' + user.uid);
-        } catch (e) {
-          console.error('❌ Failed to write tbl_User:', e?.message || e);
-        }
+        // NOTE: removed client-side write to tbl_User — user documents are no
+        // longer automatically written from the client. If you want a server
+        // controlled user record, create a Cloud Function or use the Admin SDK.
 
         // Sign out the user so they must verify before logging in
         try {
