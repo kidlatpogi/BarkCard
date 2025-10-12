@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "666851736526",
+    "project_id": "dm-bcv4",
+    "storage_bucket": "dm-bcv4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666851736526:android:7b53149a068ff5e960499f",
+        "android_client_info": {
+          "package_name": "com.barkcard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCaAPSixOE-l13hmVl9ApnWoL-qxu6HN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
