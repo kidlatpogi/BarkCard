@@ -7,8 +7,8 @@ import AddressPicker from '../COMPONENTS/AddressPicker';
 import { db } from '../firebaseConfig';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
-// simple student number validation: YYYY-######
-const STUDENT_REGEX = /^\d{4}-\d{6}$/;
+// Updated student number validation: YYYY-###### to YYYY-######## (6-8 digits)
+const STUDENT_REGEX = /^\d{4}-\d{6,8}$/;
 
 export default function CompleteProfile({ user, onComplete }) {
   const [firstName, setFirstName] = useState('');
@@ -32,7 +32,7 @@ export default function CompleteProfile({ user, onComplete }) {
     if (!lastName.trim()) e.lastName = 'Last name is required';
     if (!mobile.trim()) e.mobile = 'Mobile number is required';
     if (!studentNumber.trim()) e.studentNumber = 'Student number is required';
-    else if (!STUDENT_REGEX.test(studentNumber.trim())) e.studentNumber = 'Format: 2023-123456';
+    else if (!STUDENT_REGEX.test(studentNumber.trim())) e.studentNumber = 'Format: 2023-123456 (6-8 digits)';
     if (!region.trim()) e.region = 'Region is required';
     if (!province.trim()) e.province = 'Province is required';
     if (!municipality.trim()) e.municipality = 'Municipality is required';
@@ -101,16 +101,16 @@ export default function CompleteProfile({ user, onComplete }) {
           <Text style={styles.title}>Complete your profile</Text>
 
           <View style={styles.row}>
-            <View style={styles.col}> 
+            <View style={styles.col}>
               <Text style={styles.label}>First Name</Text>
               <TextInput value={firstName} onChangeText={setFirstName} placeholder="First name" style={styles.input} placeholderTextColor="#9ca3af" />
               {errors.firstName ? <Text style={styles.err}>{errors.firstName}</Text> : null}
             </View>
-            <View style={[styles.col, { marginLeft: 12 }]}> 
+            <View style={[styles.col, { marginLeft: 12 }]}>
               <Text style={styles.label}>Middle Name</Text>
               <TextInput value={middleName} onChangeText={setMiddleName} placeholder="Middle name" style={styles.input} placeholderTextColor="#9ca3af" />
             </View>
-            <View style={[styles.col, { marginLeft: 12 }]}> 
+            <View style={[styles.col, { marginLeft: 12 }]}>
               <Text style={styles.label}>Last Name</Text>
               <TextInput value={lastName} onChangeText={setLastName} placeholder="Last name" style={styles.input} placeholderTextColor="#9ca3af" />
               {errors.lastName ? <Text style={styles.err}>{errors.lastName}</Text> : null}
