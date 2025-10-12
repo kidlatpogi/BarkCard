@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, View, StyleSheet, Image, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, View, StyleSheet, Image, Platform, KeyboardAvoidingView, ScrollView, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import styles from '../STYLES/CreateAccount.styles';
 
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
-// ...existing code...
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 // Password policy: max 24 chars, at least 1 upper, 1 lower, 1 number
 const MAX_PASSWORD_LENGTH = 24;
@@ -65,9 +65,30 @@ export default function CreateAccount({ onCreated, onCancel }) {
         await sendEmailVerification(user);
         console.log('✅ Email verification sent successfully to', user.email);
 
-        // NOTE: removed client-side write to tbl_User — user documents are no
-        // longer automatically written from the client. If you want a server
-        // controlled user record, create a Cloud Function or use the Admin SDK.
+        // Ensure a single user document exists at tbl_User/{uid}
+        try {
+          await setDoc(doc(db, 'tbl_User', user.uid), {
+            uid: user.uid,
+            email: user.email,
+            createdAt: serverTimestamp(),
+            role: 'user',
+            emailVerified: false
+          }, { merge: true });
+          console.log('✅ User document created/updated in Firestore at tbl_User/' + user.uid);
+        } catch (e) {
+          console.error('❌ Failed to write tbl_User:', e?.code || e?.message || e);
+          const code = e?.code || e?.message || '';
+          if (typeof code === 'string' && code.toLowerCase().includes('permission')) {
+            Alert.alert(
+              'Permission denied',
+              'Could not create user document due to Firestore security rules. You can open the Firestore Rules console to review or adjust rules.',
+              [
+                { text: 'Open Rules', onPress: () => Linking.openURL('https://console.firebase.google.com/project/dm-bcv4/firestore/rules') },
+                { text: 'OK', style: 'cancel' }
+              ]
+            );
+          }
+        }
 
         // Sign out the user so they must verify before logging in
         try {
