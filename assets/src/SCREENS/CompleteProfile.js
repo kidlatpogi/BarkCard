@@ -32,7 +32,7 @@ export default function CompleteProfile({ user, onComplete }) {
     if (!lastName.trim()) e.lastName = 'Last name is required';
     if (!mobile.trim()) e.mobile = 'Mobile number is required';
     if (!studentNumber.trim()) e.studentNumber = 'Student number is required';
-    else if (!STUDENT_REGEX.test(studentNumber.trim())) e.studentNumber = 'Format: 2023-123456';
+    else if (!STUDENT_REGEX.test(studentNumber.trim())) e.studentNumber = 'Format: 2023-12345678';
     if (!region.trim()) e.region = 'Region is required';
     if (!province.trim()) e.province = 'Province is required';
     if (!municipality.trim()) e.municipality = 'Municipality is required';
@@ -125,7 +125,7 @@ export default function CompleteProfile({ user, onComplete }) {
             </View>
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Text style={styles.label}>Student Number</Text>
-              <TextInput value={studentNumber} onChangeText={setStudentNumber} placeholder="2023-123456" style={styles.input} placeholderTextColor="#9ca3af" />
+              <TextInput value={studentNumber} onChangeText={setStudentNumber} placeholder="2023-12345678" style={styles.input} placeholderTextColor="#9ca3af" />
               {errors.studentNumber ? <Text style={styles.err}>{errors.studentNumber}</Text> : null}
             </View>
           </View>
