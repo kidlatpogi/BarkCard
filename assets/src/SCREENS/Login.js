@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Alert, Linking } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Alert, Linking, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
@@ -139,6 +139,12 @@ export default function Login({ onLogin, onCreateNavigate }) {
 
   return (
     <SafeAreaView style={styles.screen}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
       <View style={styles.centerContainer}>
         <View style={styles.header}>
           <View style={styles.logoWrap}>
@@ -198,6 +204,8 @@ export default function Login({ onLogin, onCreateNavigate }) {
         </TouchableOpacity>
         </View>
       </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
 
       <StatusBar style="auto" />
     </SafeAreaView>
