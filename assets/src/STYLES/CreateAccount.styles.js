@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#1e3a8a',
     padding: 20,
   },
   header: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 40,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10,
@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontSize: 28,
-    color: '#2f80ed',
+    color: '#f5c842',
     fontWeight: '800',
   },
   heading: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#0f172a',
+    color: '#fff',
   },
   centerContainer: {
     flex: 1,
@@ -44,13 +44,13 @@ const styles = StyleSheet.create({
   },
   subheading: {
     fontSize: 13,
-    color: '#475569',
+    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
     marginTop: 6,
     paddingHorizontal: 6,
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 12,
     padding: 18,
     marginTop: 8,
@@ -62,14 +62,15 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#e6e9ef',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     paddingHorizontal: 12,
     marginBottom: 12,
     paddingRight: 44, // reserve space for the eye icon
-    backgroundColor: '#fbfbff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    color: '#fff',
   },
   toggleText: {
-    color: '#2f80ed',
+    color: '#f5c842',
     fontWeight: '600',
   },
   validation: {
@@ -77,11 +78,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   validationTitle: {
-    color: '#334155',
+    color: '#fff',
     marginBottom: 6,
   },
   neutral: {
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.6)',
     marginBottom: 2,
   },
   valid: {
@@ -89,18 +90,18 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   invalid: {
-    color: '#ef4444',
+    color: '#ff6b6b',
     marginBottom: 2,
   },
   errorText: {
-    color: '#ef4444',
+    color: '#ff6b6b',
     marginTop: 6,
     marginBottom: 6,
   },
   primaryButton: {
     height: 50,
     borderRadius: 10,
-    backgroundColor: '#2f80ed',
+    backgroundColor: '#f5c842',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 8,
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: '#1e3a8a',
     fontSize: 16,
     fontWeight: '700',
   },
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   linkText: {
-    color: '#374151',
+    color: '#f5c842',
     fontWeight: '600',
   }
 });

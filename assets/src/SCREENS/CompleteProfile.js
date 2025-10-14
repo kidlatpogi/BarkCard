@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvoidingView, Platform, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
@@ -125,22 +125,19 @@ export default function CompleteProfile({ user, onComplete, onCancel, isEditMode
     }
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          {isEditMode && onCancel && (
-            <TouchableOpacity 
-              onPress={onCancel} 
-              style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="arrow-back" size={24} color="#2f80ed" />
-              <Text style={{ marginLeft: 8, fontSize: 16, color: '#2f80ed', fontWeight: '500' }}>Back</Text>
-            </TouchableOpacity>
-          )}
-          <Text style={styles.title}>{isEditMode ? 'Edit Profile' : 'Complete your profile'}</Text>
+  const renderContent = () => (
+    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      {isEditMode && onCancel && (
+        <TouchableOpacity 
+          onPress={onCancel} 
+          style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="#f5c842" />
+          <Text style={{ marginLeft: 8, fontSize: 16, color: '#f5c842', fontWeight: '500' }}>Back</Text>
+        </TouchableOpacity>
+      )}
+      <Text style={styles.title}>{isEditMode ? 'Edit Profile' : 'Complete your profile'}</Text>
 
           <View style={styles.row}>
             <View style={styles.col}>
@@ -220,9 +217,37 @@ export default function CompleteProfile({ user, onComplete, onCancel, isEditMode
             <Text style={styles.primaryButtonText}>{loading ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Complete Profile')}</Text>
           </TouchableOpacity>
 
-          {/* Skip removed — profile completion is mandatory */}
-        </ScrollView>
-      </KeyboardAvoidingView>
+      {/* Skip removed — profile completion is mandatory */}
+    </ScrollView>
+  );
+
+  // Try to load the background image, fallback to solid color if not available
+  let backgroundImageSource;
+  try {
+    backgroundImageSource = require('../IMAGES/building-background.jpg');
+  } catch (e) {
+    backgroundImageSource = null;
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar style={isEditMode ? "auto" : "light"} />
+      {!isEditMode && backgroundImageSource ? (
+        <ImageBackground 
+          source={backgroundImageSource} 
+          style={styles.backgroundImage}
+          imageStyle={styles.backgroundImageStyle}
+        >
+          <View style={styles.overlay} />
+          <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            {renderContent()}
+          </KeyboardAvoidingView>
+        </ImageBackground>
+      ) : (
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          {renderContent()}
+        </KeyboardAvoidingView>
+      )}
     </SafeAreaView>
   );
 }
