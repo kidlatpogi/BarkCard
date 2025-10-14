@@ -68,37 +68,10 @@ export default StyleSheet.create({
     fontWeight: '600'
   },
 
-  actionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12
-  },
-  action: {
-    flex: 1,
-    backgroundColor: '#fff',
-    marginHorizontal: 4,
-    borderRadius: 10,
-    padding: 12,
-    alignItems: 'center'
-  },
-  actionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: '#eef6ff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8
-  },
-  actionLabel: {
-    fontSize: 12,
-    color: '#0f172a'
-  },
-
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12
+    marginBottom: 16
   },
   statCard: {
     flex: 1,
@@ -116,6 +89,38 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     marginTop: 6,
+    color: '#0f172a'
+  },
+
+  supportButton: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e6eef9'
+  },
+  supportIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#eef6ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14
+  },
+  supportText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
     color: '#0f172a'
   },
 
@@ -157,10 +162,26 @@ export default StyleSheet.create({
   txRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eef2ff'
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: 8
   },
-  txTitle: { color: '#0f172a' },
-  txAmount: { color: '#08306b', fontWeight: '700' }
+  txTitle: { 
+    color: '#0f172a',
+    fontWeight: '600',
+    fontSize: 14
+  },
+  txTime: {
+    color: '#9ca3af',
+    fontSize: 12,
+    marginTop: 2
+  },
+  txAmount: { 
+    color: '#08306b', 
+    fontWeight: '700',
+    fontSize: 15
+  }
 });

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
 import styles from '../STYLES/CompleteProfile.styles';
 import AddressPicker from '../COMPONENTS/AddressPicker';
 import { db } from '../firebaseConfig';
@@ -10,21 +11,49 @@ import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 // Updated student number validation: YYYY-###### to YYYY-######## (6-8 digits)
 const STUDENT_REGEX = /^\d{4}-\d{6,8}$/;
 
-export default function CompleteProfile({ user, onComplete }) {
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [studentNumber, setStudentNumber] = useState('');
+export default function CompleteProfile({ user, onComplete, onCancel, isEditMode = false }) {
+  console.log('=== CompleteProfile Debug ===');
+  console.log('isEditMode:', isEditMode);
+  console.log('user object:', JSON.stringify(user, null, 2));
+  console.log('v_FirstName:', user?.v_FirstName);
+  console.log('v_LastName:', user?.v_LastName);
+  console.log('v_StudentId:', user?.v_StudentId);
+  console.log('=============================');
+  
+  // Helper to reformat student ID with dash
+  const formatStudentId = (storedId) => {
+    if (!storedId) return '';
+    if (storedId.length >= 10 && !storedId.includes('-')) {
+      const year = storedId.substring(0, 4);
+      const rest = storedId.substring(4);
+      return `${year}-${rest}`;
+    }
+    return storedId;
+  };
+  
+  // Initialize with user data if in edit mode
+  const [firstName, setFirstName] = useState(isEditMode && user ? (user.v_FirstName || '') : '');
+  const [middleName, setMiddleName] = useState(isEditMode && user ? (user.v_MiddleName || '') : '');
+  const [lastName, setLastName] = useState(isEditMode && user ? (user.v_LastName || '') : '');
+  const [mobile, setMobile] = useState(isEditMode && user ? (user.v_PhoneNum || '') : '');
+  const [studentNumber, setStudentNumber] = useState(isEditMode && user ? formatStudentId(user.v_StudentId || '') : '');
   const [address, setAddress] = useState('');
-  const [region, setRegion] = useState('');
-  const [province, setProvince] = useState('');
-  const [municipality, setMunicipality] = useState('');
-  const [barangay, setBarangay] = useState('');
-  const [zipcode, setZipcode] = useState('');
+  const [region, setRegion] = useState(isEditMode && user ? (user.v_Region || '') : '');
+  const [province, setProvince] = useState(isEditMode && user ? (user.v_Province || '') : '');
+  const [municipality, setMunicipality] = useState(isEditMode && user ? (user.v_Municipality || '') : '');
+  const [barangay, setBarangay] = useState(isEditMode && user ? (user.v_Barangay || '') : '');
+  const [zipcode, setZipcode] = useState(isEditMode && user ? (user.v_ZipCode || '') : '');
   const [pickerVisible, setPickerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Update address display when in edit mode
+  useEffect(() => {
+    if (isEditMode && user && (user.v_Barangay || user.v_Municipality || user.v_Province)) {
+      const formatted = `${user.v_Barangay || ''}, ${user.v_Municipality || ''}, ${user.v_Province || ''}`;
+      setAddress(formatted);
+    }
+  }, [isEditMode, user]);
 
   const validate = () => {
     const e = {};
@@ -55,19 +84,22 @@ export default function CompleteProfile({ user, onComplete }) {
         if (!user || !user.uid) throw new Error('Missing user UID');
         const uid = user.uid;
         const userDoc = doc(db, 'tbl_User', uid);
+        // Remove dash from student number before saving to database
+        const studentIdWithoutDash = studentNumber ? studentNumber.replace(/-/g, '') : '';
         const payload = {
           v_CardUID: null,
           v_CreatedAt: serverTimestamp(),
           v_DateofBirth: null,
           v_FirstName: firstName,
+          v_MiddleName: middleName || null,
           v_LastName: lastName,
           v_NFCId: null,
           v_PhoneNum: mobile || null,
           v_Status: 'active',
-          v_StudentBalance: 0,
-          v_StudentId: studentNumber || '',
-          v_StudentTotalExpenses: 0,
-          v_StudentTotalIncome: 0,
+          v_StudentBalance: isEditMode ? (user.v_StudentBalance || 0) : 0,
+          v_StudentId: studentIdWithoutDash,
+          v_StudentTotalExpenses: isEditMode ? (user.v_StudentTotalExpenses || 0) : 0,
+          v_StudentTotalIncome: isEditMode ? (user.v_StudentTotalIncome || 0) : 0,
           v_UserEmail: user.email || null,
           v_UserRole: 'Student',
           v_ZipCode: zipcode || null,
@@ -98,7 +130,17 @@ export default function CompleteProfile({ user, onComplete }) {
       <StatusBar style="auto" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <Text style={styles.title}>Complete your profile</Text>
+          {isEditMode && onCancel && (
+            <TouchableOpacity 
+              onPress={onCancel} 
+              style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="arrow-back" size={24} color="#2f80ed" />
+              <Text style={{ marginLeft: 8, fontSize: 16, color: '#2f80ed', fontWeight: '500' }}>Back</Text>
+            </TouchableOpacity>
+          )}
+          <Text style={styles.title}>{isEditMode ? 'Edit Profile' : 'Complete your profile'}</Text>
 
           <View style={styles.row}>
             <View style={styles.col}>
@@ -175,7 +217,7 @@ export default function CompleteProfile({ user, onComplete }) {
           }} />
 
           <TouchableOpacity style={[styles.primaryButton, loading ? styles.disabled : null]} onPress={handleSubmit} disabled={loading} activeOpacity={0.85}>
-            <Text style={styles.primaryButtonText}>{loading ? 'Saving...' : 'Complete Profile'}</Text>
+            <Text style={styles.primaryButtonText}>{loading ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Complete Profile')}</Text>
           </TouchableOpacity>
 
           {/* Skip removed — profile completion is mandatory */}
