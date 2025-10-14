@@ -53,15 +53,38 @@ export default function CreateAccount({ onCreated, onCancel }) {
 
     setLoading(true);
     try {
+      // Check for deactivated account with this email
+      // Query Firestore for any user with v_UserEmail == email and v_Status == 'deactivated'
+      let deactivatedExists = false;
+      try {
+        const q = await db.collection('tbl_User').where('v_UserEmail', '==', email).where('v_Status', '==', 'deactivated').get();
+        if (!q.empty) {
+          deactivatedExists = true;
+        }
+      } catch (firestoreErr) {
+        // fallback for modular SDK
+        try {
+          const { getDocs, query, collection, where } = await import('firebase/firestore');
+          const q = query(collection(db, 'tbl_User'), where('v_UserEmail', '==', email), where('v_Status', '==', 'deactivated'));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            deactivatedExists = true;
+          }
+        } catch (modErr) {
+          console.error('Firestore query error', modErr);
+        }
+      }
+      if (deactivatedExists) {
+        setLoading(false);
+        Alert.alert('Account Deactivated', 'This email is associated with a deactivated account and cannot be used to create a new account. Please contact support.');
+        return;
+      }
+
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
       // Send email verification (default flow)
       try {
-        // NOTE: Using a custom continue URL requires that the domain is added to
-        // the Firebase project's Authorized Domains. If you don't need a
-        // continue URL, use the default sendEmailVerification, which avoids
-        // the 'auth/unauthorized-continue-uri' error.
         await sendEmailVerification(user);
         console.log('✅ Email verification sent successfully to', user.email);
 
@@ -227,11 +250,31 @@ export default function CreateAccount({ onCreated, onCancel }) {
             </TouchableOpacity>
 
             {!formValid() ? (
-              <View style={{ marginTop: 10 }}>
-                <Text style={{ color: '#6b7280', marginBottom: 6 }}>Please resolve the following before creating an account:</Text>
-                {!isValidEmail(email) ? <Text style={{ color: '#ef4444' }}>• Enter a valid email address</Text> : null}
-                {!isPasswordValid() ? <Text style={{ color: '#ef4444' }}>• Password must be 1 upper, 1 lower, 1 number, max 24 chars</Text> : null}
-                {!doPasswordsMatch() ? <Text style={{ color: '#ef4444' }}>• Passwords must match</Text> : null}
+              <View style={local.warningCard}>
+                <View style={local.warningHeader}>
+                  <Ionicons name="alert-circle-outline" size={20} color="#f5c842" />
+                  <Text style={local.warningTitle}>Complete these requirements:</Text>
+                </View>
+                <View style={local.warningList}>
+                  {!isValidEmail(email) ? (
+                    <View style={local.warningItem}>
+                      <Ionicons name="close-circle" size={16} color="#ff6b6b" />
+                      <Text style={local.warningText}>Enter a valid email address</Text>
+                    </View>
+                  ) : null}
+                  {!isPasswordValid() ? (
+                    <View style={local.warningItem}>
+                      <Ionicons name="close-circle" size={16} color="#ff6b6b" />
+                      <Text style={local.warningText}>Password must be 1 upper, 1 lower, 1 number, max 24 chars</Text>
+                    </View>
+                  ) : null}
+                  {!doPasswordsMatch() ? (
+                    <View style={local.warningItem}>
+                      <Ionicons name="close-circle" size={16} color="#ff6b6b" />
+                      <Text style={local.warningText}>Passwords must match</Text>
+                    </View>
+                  ) : null}
+                </View>
               </View>
             ) : null}
 
@@ -260,5 +303,38 @@ const local = StyleSheet.create({
     right: 12,
     top: 12,
     padding: 6,
+  },
+  warningCard: {
+    marginTop: 16,
+    backgroundColor: 'rgba(245, 200, 66, 0.1)',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(245, 200, 66, 0.3)',
+  },
+  warningHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  warningTitle: {
+    color: '#f5c842',
+    fontSize: 15,
+    fontWeight: '700',
+    marginLeft: 8,
+  },
+  warningList: {
+    gap: 8,
+  },
+  warningItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingLeft: 8,
+  },
+  warningText: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 13,
+    marginLeft: 8,
+    flex: 1,
   }
 });

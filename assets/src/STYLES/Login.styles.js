@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		padding: 20,
 		justifyContent: 'center',
-		backgroundColor: '#fff',
+		backgroundColor: '#1e3a8a',
 		alignItems: 'center',
 	},
 	title: {
@@ -13,16 +13,17 @@ const styles = StyleSheet.create({
 		fontWeight: '600',
 		marginBottom: 20,
 		textAlign: 'center',
-		color: '#222',
+		color: '#fff',
 	},
 	input: {
 		height: 48,
-		borderColor: '#ddd',
+		borderColor: 'rgba(255, 255, 255, 0.3)',
 		borderWidth: 1,
 		borderRadius: 8,
 		paddingHorizontal: 12,
 		marginBottom: 12,
-		backgroundColor: '#fafafa',
+		backgroundColor: 'rgba(255, 255, 255, 0.1)',
+		color: '#fff',
 	},
 	logoImage: {
 		width: 120,
@@ -32,19 +33,19 @@ const styles = StyleSheet.create({
 	button: {
 		height: 48,
 		borderRadius: 8,
-		backgroundColor: '#2f80ed',
+		backgroundColor: '#f5c842',
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginTop: 8,
 	},
 	buttonText: {
-		color: '#fff',
+		color: '#1e3a8a',
 		fontSize: 16,
-		fontWeight: '600',
+		fontWeight: '700',
 	},
 	text: {
 		fontSize: 16,
-		color: '#333',
+		color: '#fff',
 	}
 });
 

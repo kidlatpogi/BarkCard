@@ -75,14 +75,23 @@ export default function Login({ onLogin, onCreateNavigate }) {
           return;
         }
 
-        setLoading(false);
-        // Persist a minimal user doc in tbl_User/{uid} only if it doesn't exist (first-time login)
+        // Check v_Status in Firestore before allowing login
+        let status = 'active';
         try {
           if (user && user.uid) {
             const uid = user.uid;
             const userDocRef = doc(db, 'tbl_User', uid);
             const existing = await getDoc(userDocRef);
-            if (!existing.exists()) {
+            if (existing.exists()) {
+              status = existing.data()?.v_Status || 'active';
+              if (status === 'deactivated') {
+                setLoading(false);
+                await signOut(auth);
+                Alert.alert('Account Deactivated', 'Your account has been deactivated. Please contact support for assistance.');
+                return;
+              }
+            } else {
+              // If no doc, create a minimal one
               const payload = {
                 v_CardUID: null,
                 v_CreatedAt: serverTimestamp(),
@@ -101,12 +110,10 @@ export default function Login({ onLogin, onCreateNavigate }) {
               };
               await setDoc(userDocRef, payload, { merge: true });
               console.log('Created tbl_User/' + uid);
-            } else {
-              console.log('tbl_User/' + uid + ' already exists — skipping create');
             }
           }
         } catch (e) {
-          console.error('Failed to save tbl_User', e);
+          console.error('Failed to check/save tbl_User', e);
           const code = e?.code || e?.message || '';
           if (typeof code === 'string' && code.toLowerCase().includes('permission')) {
             Alert.alert(
@@ -120,6 +127,7 @@ export default function Login({ onLogin, onCreateNavigate }) {
           }
         }
 
+        setLoading(false);
         if (onLogin) onLogin({ email: user.email, uid: user.uid });
       } catch (err) {
         setLoading(false);
@@ -166,7 +174,7 @@ export default function Login({ onLogin, onCreateNavigate }) {
 
         <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}> 
           <TextInput
-            style={{ flex: 1, paddingVertical: 0, color: '#0f172a' }}
+            style={{ flex: 1, paddingVertical: 0, color: '#fff' }}
             placeholder="Password"
             secureTextEntry={!showPassword}
             value={password}
