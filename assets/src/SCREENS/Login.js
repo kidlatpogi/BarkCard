@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Alert, Linking, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, Alert, Linking, KeyboardAvoidingView, Platform, ScrollView, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
@@ -17,6 +17,7 @@ export default function Login({ onLogin, onCreateNavigate }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const handleLogin = async () => {
     setError('');
@@ -210,10 +211,41 @@ export default function Login({ onLogin, onCreateNavigate }) {
         <TouchableOpacity style={styles.linkButton} onPress={onCreateNavigate}>
           <Text style={styles.linkText}>Don't have an account? Create Account</Text>
         </TouchableOpacity>
+
+        {/* Terms & Privacy Link */}
+        <TouchableOpacity style={{ marginTop: 18, alignSelf: 'center' }} onPress={() => setShowPrivacy(true)}>
+          <Text style={{ color: '#f5c842', textDecorationLine: 'underline', fontSize: 13 }}>Terms & Privacy</Text>
+        </TouchableOpacity>
         </View>
       </View>
       </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Privacy Modal */}
+      <Modal visible={showPrivacy} animationType="slide" transparent={true} onRequestClose={() => setShowPrivacy(false)}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(30,58,138,0.95)', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+          <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24, maxWidth: 400, width: '100%' }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#1e3a8a', marginBottom: 12 }}>BarkCard – Privacy Policy</Text>
+            <Text style={{ color: '#222', fontSize: 13, marginBottom: 8 }}>Last updated: October 15, 2025</Text>
+            <ScrollView style={{ maxHeight: 320 }}>
+              <Text style={{ color: '#222', fontSize: 14, marginBottom: 10 }}>
+                BarkCard respects your privacy. This policy explains how we collect, use, and protect your data.{"\n\n"}
+                <Text style={{ fontWeight: 'bold' }}>Data We Collect</Text> – Basic info from your student ID (name, ID number, email), login credentials, and transaction details.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>Use of Data</Text> – Used only for authentication, payments, balance tracking, and service improvement.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>Data Security</Text> – All records are securely stored in Google Firebase, which uses encrypted databases and restricted access controls.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>No Sharing</Text> – We don’t sell or share your personal data with third parties.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>User Access</Text> – You may request to update or delete your data by contacting the BarkCard admin.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>Cookies / Logs</Text> – Basic logs may be collected to maintain performance and security.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>Updates</Text> – We may revise this policy; changes will be posted in-app. Continued use means you accept them.{"\n"}
+                <Text style={{ fontWeight: 'bold' }}>Contact</Text> – For privacy questions or requests, email barkcard.adm1n@gmail.com.
+              </Text>
+            </ScrollView>
+            <TouchableOpacity style={{ marginTop: 18, alignSelf: 'center' }} onPress={() => setShowPrivacy(false)}>
+              <Text style={{ color: '#1e3a8a', fontWeight: 'bold', fontSize: 15 }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <StatusBar style="auto" />
     </SafeAreaView>
